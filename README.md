@@ -77,6 +77,6 @@ This reflects real-world scenarios where models must generalize to new battery c
 
 ## Author
 
-Nima Tavakoli Banizi
-B.Sc. Computer Science
-Focus: Machine Learning, Battery Aging, EV Systems
+- Nima Tavakoli Banizi
+- B.Sc. Computer Science
+- Focus: Machine Learning, Battery Aging, EV Systems
