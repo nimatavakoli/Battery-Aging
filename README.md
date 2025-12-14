@@ -1,182 +1,84 @@
-Battery Aging Prediction using Machine Learning
-Overview
+# 🔋 Battery Aging Prediction using Machine Learning
 
-This repository contains a machine learning pipeline for battery aging prediction using the NASA Li-ion Battery Aging Dataset.
-The goal of this project is to model and predict battery degradation behavior by extracting cycle-level features from raw discharge measurements and evaluating different regression models.
+## Overview
+This repository contains a **Jupyter Notebook (`BatteryAging.ipynb`)** that implements a complete machine learning workflow for **battery aging prediction** using the **NASA Li-ion Battery Aging Dataset**.
 
-The project is designed to demonstrate:
+The notebook demonstrates how raw, uncleaned discharge measurements can be transformed into meaningful **cycle-level features**, followed by robust model training and evaluation.  
+The project is designed as an **academic portfolio project** for **M.Sc. applications in Computer Science / Artificial Intelligence**.
 
-Proper data preprocessing for real-world, uncleaned industrial datasets
+---
 
-Feature engineering from time-series sensor data
+## Dataset
+**Source:** NASA Ames Prognostics Center of Excellence  
+🔗 https://data.nasa.gov/dataset/li-ion-battery-aging-datasets
+or you can Download it on my Repository
 
-Model evaluation with strict data leakage prevention
+**File used:**
+- `discharge.csv`
 
-Interpretable performance analysis per battery cell
+**Description:**  
+The dataset consists of time-series measurements collected during battery discharge cycles, including voltage, current, temperature, and time.  
+Each battery is tested across many cycles until performance degradation occurs.
 
-This work is intended as an academic project for applications to M.Sc. programs in Computer Science / Artificial Intelligence.
+---
 
-Dataset
+## Notebook Structure (`BatteryAging.ipynb`)
 
-Source: NASA Ames Prognostics Center of Excellence
-Link: https://data.nasa.gov/dataset/li-ion-battery-aging-datasets
-or you can download it from my Repository
+The notebook is organized into clearly separated sections:
 
-File used:
+1. **Data Loading & Cleaning**
+   - Load raw CSV data
+   - Filter discharge cycles
+   - Handle missing or invalid entries
 
-discharge.csv
+2. **Feature Engineering**
+   - Group data by `Battery` and `id_cycle`
+   - Aggregate time-series signals into cycle-level statistical features
 
-Description:
-The dataset contains time-series measurements collected during battery discharge cycles, including voltage, current, temperature, and time.
+3. **Modeling**
+   - Train multiple regression models:
+     - Linear Regression
+     - ElasticNet
+     - Random Forest
+     - Gradient Boosting
+     - Extra Trees
 
-Each battery is tested over many charge–discharge cycles until degradation.
+4. **Evaluation**
+   - Use **Leave-One-Group-Out Cross-Validation**
+   - Ensure leakage-free evaluation by holding out entire batteries
+   - Report MAE, RMSE, and R² scores
 
-Problem Definition
+5. **Results & Analysis**
+   - Compare model performance per battery
+   - Analyze generalization behavior on unseen cells
 
-Battery aging is reflected in the gradual degradation of battery capacity and performance over charge–discharge cycles.
+---
 
-In this project:
+## Validation Strategy
+To ensure realistic and unbiased results, the notebook uses:
 
-Raw discharge measurements are aggregated into cycle-level statistical features
+**Leave-One-Group-Out Cross-Validation (LOGO)**  
+- Group definition: Battery ID  
+- Each fold evaluates the model on a completely unseen battery
 
-Machine learning models are trained to predict aging-related targets
+This reflects real-world scenarios where models must generalize to new battery cells.
 
-Model generalization is evaluated by holding out entire batteries
+---
 
-This simulates a realistic industrial scenario:
-predicting aging behavior for unseen battery cells.
+## How to Run the Notebook
 
-Methodology
-1. Data Preprocessing
-
-Filter only discharge cycles
-
-Remove invalid or non-relevant rows
-
-Group data by Battery and id_cycle
-
-2. Feature Engineering
-
-Raw time-series signals are aggregated per cycle using:
-
-Mean
-
-Standard deviation
-
-Minimum / maximum values
-
-This transforms high-frequency sensor data into a compact and informative feature set.
-
-3. Modeling
-
-The following regression models are used:
-
-Linear Regression (baseline)
-
-ElasticNet (regularized linear model)
-
-Random Forest Regressor
-
-Gradient Boosting Regressor
-
-Extra Trees Regressor
-
-4. Evaluation Strategy
-
-To prevent data leakage, evaluation is performed using:
-
-Leave-One-Group-Out Cross-Validation (LOGO)
-
-Group = Battery ID
-
-Each fold tests on a completely unseen battery
-
-5. Metrics
-
-Model performance is reported using:
-
-MAE (Mean Absolute Error)
-
-RMSE (Root Mean Squared Error)
-
-R² Score
-
-Results are shown:
-
-Per battery
-
-Overall across all batteries
-
-Repository Structure
-Battery-Aging/
-│
-├── batteryAging.py        # Main ML pipeline script
-├── README.md               # Project documentation
-├── requirements.txt        # Python dependencies (optional)
-
-How to Run
-Requirements
-
-Python 3.9+
-
-pandas
-
-numpy
-
-scikit-learn
+### Requirements
+- Python 3.9+
+- Jupyter Notebook / JupyterLab
+- pandas
+- numpy
+- scikit-learn
 
 Install dependencies:
+```bash
+pip install pandas numpy scikit-learn jupyter
 
-pip install pandas numpy scikit-learn
-
-Run the script
-
-Edit the dataset path inside the script if needed, then:
-
-python batteryAging.py
-
-
-The script will:
-
-Load the dataset
-
-Train multiple models
-
-Print evaluation metrics per battery and overall
-
-Key Technical Highlights
-
-Real-world uncleaned dataset handling
-
-Cycle-level aggregation from time-series data
-
-Strict leakage-safe validation strategy
-
-Comparison of linear vs ensemble models
-
-Industry-relevant battery degradation modeling
-
-Academic Relevance
-
-This project demonstrates practical skills in:
-
-Machine learning for time-series data
-
-Feature engineering
-
-Model evaluation and validation
-
-Applied data science in energy systems
-
-It is suitable as:
-
-A portfolio project
-
-A research-style ML project
-
-Supporting material for graduate program applications
-
-Author
+##Author
 
 Nima Tavakoli Banizi
 B.Sc. Computer Science
