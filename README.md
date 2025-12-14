@@ -11,7 +11,7 @@ The project is designed as an **academic portfolio project** for **M.Sc. applica
 ## Dataset
 **Source:** NASA Ames Prognostics Center of Excellence  
 🔗 https://data.nasa.gov/dataset/li-ion-battery-aging-datasets
-or you can Download it on my Repository
+or you can Download it from my own Repository
 
 **File used:**
 - `discharge.csv`
@@ -74,11 +74,8 @@ This reflects real-world scenarios where models must generalize to new battery c
 - numpy
 - scikit-learn
 
-Install dependencies:
-```bash
-pip install pandas numpy scikit-learn jupyter
 
-##Author
+## Author
 
 Nima Tavakoli Banizi
 B.Sc. Computer Science
