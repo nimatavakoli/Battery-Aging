@@ -1,82 +1,109 @@
-# 🔋 Battery Aging Prediction using Machine Learning
+# 🔋 Battery Aging Prediction using Machine Learning (NASA Dataset)
 
-## Overview
-This repository contains a **Jupyter Notebook (`BatteryAging.ipynb`)** that implements a complete machine learning workflow for **battery aging prediction** using the **NASA Li-ion Battery Aging Dataset**.
+This repository contains a Jupyter Notebook **`BatteryAging.ipynb`** that implements an end-to-end machine learning workflow to predict **battery State of Health (SOH)** from discharge-cycle measurements using the **NASA Li-ion Battery Aging Dataset**.
 
-The notebook demonstrates how raw, uncleaned discharge measurements can be transformed into meaningful **cycle-level features**, followed by robust model training and evaluation.  
-The project is designed as an **academic portfolio project** for **M.Sc. applications in Computer Science / Artificial Intelligence**.
+The notebook demonstrates how raw, time-series discharge measurements can be transformed into **cycle-level features**, followed by **leakage-safe model training and evaluation**.  
+
+---
+
+## Key Objectives
+- Convert raw discharge time-series into informative **cycle-level features**
+- Define a robust SOH target using a stable initial capacity baseline
+- Train and compare multiple regression models
+- Evaluate generalization using **Leave-One-Battery-Out** validation (LOGO CV)
 
 ---
 
 ## Dataset
-**Source:** NASA Ames Prognostics Center of Excellence  
-🔗 https://data.nasa.gov/dataset/li-ion-battery-aging-datasets
-or you can Download it from my own Repository
+**Source:** NASA Ames Prognostics Center of Excellence (PCoE)  
+Dataset portal:  
+- https://data.nasa.gov/dataset/li-ion-battery-aging-datasets
 
-**File used:**
+**File used in this project**
 - `discharge.csv`
 
-**Description:**  
-The dataset consists of time-series measurements collected during battery discharge cycles, including voltage, current, temperature, and time.  
-Each battery is tested across many cycles until performance degradation occurs.
+**Description (high level)**  
+The dataset contains time-series measurements recorded during discharge cycles, including:
+- Voltage, current, temperature, ambient temperature
+- Time index within the cycle
+- Capacity-related measurement
+- Identifiers: `Battery`, `id_cycle`
+
+Each battery is cycled over time until significant performance degradation occurs.
+
+> Note: You can download the original dataset from the NASA portal above.  
+> If a copy is also provided in this repository for convenience, it is included only for reproducibility.
 
 ---
 
-## Notebook Structure (`BatteryAging.ipynb`)
+## Method Summary
 
-The notebook is organized into clearly separated sections:
+### 1) Data Loading & Cleaning
+- Load raw CSV data
+- Filter discharge cycles (`type == "discharge"`)
+- Remove missing/invalid entries for key measurement channels
 
-1. **Data Loading & Cleaning**
-   - Load raw CSV data
-   - Filter discharge cycles
-   - Handle missing or invalid entries
+### 2) Feature Engineering (Cycle-Level)
+Raw time-series samples are grouped by **(Battery, id_cycle)** and transformed into one record per cycle, including:
+- Statistical descriptors of voltage/current/temperature (mean/std/min/max)
+- Cycle duration
+- Curve-shape / physics-informed descriptors (e.g., delivered charge/energy or curve sampling, depending on notebook version)
 
-2. **Feature Engineering**
-   - Group data by `Battery` and `id_cycle`
-   - Aggregate time-series signals into cycle-level statistical features
+### 3) Target Definition: SOH
+SOH is computed from discharge capacity relative to a robust initial baseline:
+- **C₀** = median of capacity over the first *N* cycles (e.g., first 10 cycles per battery)
+- **SOH(%)** = (Capacity_cycle / C₀) × 100
 
-3. **Modeling**
-   - Train multiple regression models:
-     - Linear Regression
-     - ElasticNet
-     - Random Forest
-     - Gradient Boosting
-     - Extra Trees
+### 4) Modeling
+The notebook trains and evaluates multiple regressors, including:
+- Linear Regression
+- ElasticNet
+- Random Forest
+- Gradient Boosting
+- Extra Trees
+- (Optional) HistGradientBoosting / MLPRegressor (if enabled in the notebook)
 
-4. **Evaluation**
-   - Use **Leave-One-Group-Out Cross-Validation**
-   - Ensure leakage-free evaluation by holding out entire batteries
-   - Report MAE, RMSE, and R² scores
+### 5) Evaluation (Leakage-Safe)
+**Leave-One-Group-Out Cross-Validation (LOGO)** is used with:
+- **Group = Battery ID**
+- Each fold tests on a completely unseen battery
 
-5. **Results & Analysis**
-   - Compare model performance per battery
-   - Analyze generalization behavior on unseen cells
-
----
-
-## Validation Strategy
-To ensure realistic and unbiased results, the notebook uses:
-
-**Leave-One-Group-Out Cross-Validation (LOGO)**  
-- Group definition: Battery ID  
-- Each fold evaluates the model on a completely unseen battery
-
-This reflects real-world scenarios where models must generalize to new battery cells.
+Metrics reported:
+- MAE, RMSE, R²
+- Overall performance and per-battery performance
 
 ---
 
-## How to Run the Notebook
+## Results
+Results depend on:
+- the feature set used (basic statistical features vs. enhanced curve features)
+- whether cycle-index priors are included (`id_cycle`, `log_cycle`)
+- the chosen models and hyperparameters
+
+The notebook prints:
+- Overall metrics (pooled across folds)
+- Per-battery metrics
+- Model ranking (optionally best model per battery)
+
+If you want, you can add your final numbers here after running:
+
+- **Best overall model:** _(fill after run)_
+- **Best model for B0006:** _(fill after run)_
+
+---
+
+## Validation Strategy (Why LOGO CV?)
+Random train/test splits can leak information because cycles from the same battery may appear in both training and testing.  
+This repository uses **Leave-One-Battery-Out (LOGO)** evaluation to reflect real deployment scenarios where the model must generalize to **new, unseen batteries**.
+
+---
+
+## How to Run
 
 ### Requirements
 - Python 3.9+
 - Jupyter Notebook / JupyterLab
-- pandas
-- numpy
-- scikit-learn
 
-
-## Author
-
-- Nima Tavakoli Banizi
-- B.Sc. Computer Science
-- Focus: Machine Learning, Battery Aging, EV Systems
+Install dependencies:
+```bash
+pip install numpy pandas scikit-learn matplotlib
